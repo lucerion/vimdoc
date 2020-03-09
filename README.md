@@ -3,6 +3,11 @@
 Converts vim help files to markdown format
 
 
+## Usage
+
+    vimdoc2markdown path/to/help/file
+
+
 ## Template
 
 
