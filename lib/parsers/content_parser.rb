@@ -10,15 +10,11 @@ module VimDoc
       SECTIONS_SEPARATOR = '='
       TABLE_OF_CONTENTS_TITLE = 'CONTENTS'
 
-      Node = Struct.new(:sections, :table_of_contents)
-
-      attr_reader :sections, :table_of_contents
-
       def initialize
         @block_starts = false
         @table_of_contents_starts = false
         @lines = []
-        @node = Node.new
+        @node = {}
       end
 
       def parse(lines)
@@ -68,13 +64,15 @@ module VimDoc
       end
 
       def parse_table_of_contents
-        @node.table_of_contents = TableOfContentsParser.parse(@lines)
+        @node[:table_of_contents] = TableOfContentsParser.parse(@lines)
       end
 
       def parse_section
         section = SectionParser.parse(@lines)
-        @node.sections ||= {}
-        @node.sections[section.tag] = section
+        tag = section[:tag]
+
+        @node[:sections] ||= {}
+        @node[:sections][tag] = section
       end
 
       def table_of_contents_starts?(line)
