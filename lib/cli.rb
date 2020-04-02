@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative './parser'
+require_relative './converters/json_converter'
 
 module VimDoc
   class CLI
@@ -9,6 +10,8 @@ module VimDoc
 
       Usage: ./bin/vimdoc FILE...
     USAGE
+
+    DEFAULT_CONVERTER = Converters::JSONConverter
 
     def self.run(args)
       new.run(args)
@@ -20,13 +23,14 @@ module VimDoc
         exit
       end
 
-      args.each(&method(:parse_and_print))
+      args.each(&method(:print))
     end
 
     private
 
-    def parse_and_print(file)
-      pp Parser.parse(file)
+    def print(file)
+      tree = Parser.parse(file)
+      puts DEFAULT_CONVERTER.convert(tree)
     end
   end
 end
