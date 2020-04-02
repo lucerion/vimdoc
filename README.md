@@ -1,11 +1,11 @@
 # vimdoc
 
-Converts vim help files to markdown format
+Converts vim help files to the different formats (markdown, json, yaml, ...)
 
 
 ## Usage
 
-    ./bin/vimdoc path/to/help/file
+    ./bin/vimdoc path/to/help/file path/to/another/help/file
 
 
 ## Template
@@ -27,6 +27,7 @@ Commands                                                  |vim-plugin-commands|
 Options                                                    |vim-plugin-options|
 Changelog                                                |vim-plugin-changelog|
 License                                                    |vim-plugin-license|
+===============================================================================
 ```
 
 ### Section
@@ -38,4 +39,6 @@ COMMANDS                                                  *vim-plugin-commands*
                                                                *:PluginCommand*
 
 :PluginCommand {params}                  Command description
+
+===============================================================================
 ```
