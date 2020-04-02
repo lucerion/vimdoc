@@ -1,22 +1,20 @@
-# vimdoc2markdown
+# vimdoc
 
 Converts vim help files to markdown format
 
 
 ## Usage
 
-    ./bin/vimdoc2markdown path/to/help/file
+    ./bin/vimdoc path/to/help/file
 
 
 ## Template
-
 
 ### Header
 
 ```
 *vim-plugin.txt*    Plugin description
 ```
-
 
 ### Table of contents
 
@@ -30,7 +28,6 @@ Options                                                    |vim-plugin-options|
 Changelog                                                |vim-plugin-changelog|
 License                                                    |vim-plugin-license|
 ```
-
 
 ### Section
 
