@@ -7,7 +7,7 @@ module VimDoc
   module Converters
     class JSONConverter < BaseConverter
       def convert(tree)
-        tree.to_json
+        JSON.pretty_generate(tree)
       end
     end
   end
