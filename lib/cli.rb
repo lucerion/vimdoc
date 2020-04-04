@@ -7,7 +7,7 @@ require_relative './converters/json_converter'
 
 module VimDoc
   class CLI
-    USAGE = 'Converts vim help files to the different formats (markdown, json, yaml, ...)'
+    USAGE = 'Converts vim help files to the different formats (markdown, json, ...)'
     DEFAULT_CONVERTER = Converters::JSONConverter
 
     def self.run(args)

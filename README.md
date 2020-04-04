@@ -1,6 +1,6 @@
 # vimdoc
 
-Converts vim help files to the different formats (markdown, json, yaml, ...)
+Converts vim help files to the different formats (markdown, json, ...)
 
 
 ## Usage
