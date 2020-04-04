@@ -11,56 +11,37 @@ module VimDoc
       TABLE_OF_CONTENTS_TITLE = 'CONTENTS'
 
       def initialize
-        @block_starts = false
-        @table_of_contents_starts = false
+        @block_started = false
+        @table_of_contents = false
         @lines = []
         @node = {}
       end
 
       def parse(lines)
-        lines[1..-1].each do |line|
-          next if empty_line?(line)
-
-          if block_ends?(line)
-            end_block
-            next
-          end
-
-          if block_starts?(line)
-            @block_starts = true
-            next
-          end
-
-          if table_of_contents_starts?(line)
-            @table_of_contents_starts = true
-            next
-          end
-
-          @lines << line if @block_starts
-        end
-
+        lines[1..-1].each(&method(:handle_line))
         @node
       end
 
       private
 
-      def block_starts?(line)
-        block_separator?(line)
-      end
-
-      def block_ends?(line)
-        block_separator?(line) && @block_starts
-      end
-
-      def end_block
-        parse_block
-
-        @table_of_contents_starts = false
-        @lines = []
+      def handle_line(line)
+        case line
+        when method(:empty_line?)
+        when method(:block_ends?)
+          parse_block
+        when method(:block_starts?)
+          @block_started = true
+        when method(:table_of_contents_block?)
+          @table_of_contents = true
+        else
+          @lines << line if @block_started
+        end
       end
 
       def parse_block
-        @table_of_contents_starts ? parse_table_of_contents : parse_section
+        @table_of_contents ? parse_table_of_contents : parse_section
+        @table_of_contents = false
+        @lines = []
       end
 
       def parse_table_of_contents
@@ -75,7 +56,15 @@ module VimDoc
         @node[:sections][tag] = section
       end
 
-      def table_of_contents_starts?(line)
+      def block_starts?(line)
+        block_separator?(line)
+      end
+
+      def block_ends?(line)
+        block_separator?(line) && @block_started
+      end
+
+      def table_of_contents_block?(line)
         line.start_with?(TABLE_OF_CONTENTS_TITLE)
       end
 
