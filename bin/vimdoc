@@ -3,4 +3,4 @@
 
 require_relative '../lib/cli'
 
-VimDoc::CLI.run(ARGV)
+VimDoc::CLI.new(ARGV).run

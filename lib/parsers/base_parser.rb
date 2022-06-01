@@ -5,10 +5,6 @@ module VimDoc
     class BaseParser
       TAG_WRAPPER = '*'
 
-      def self.parse(lines)
-        new.parse(lines)
-      end
-
       def parse(_lines)
         raise NotImplementedError
       end

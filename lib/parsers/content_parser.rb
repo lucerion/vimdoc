@@ -45,11 +45,11 @@ module VimDoc
       end
 
       def parse_table_of_contents
-        @node[:table_of_contents] = TableOfContentsParser.parse(@lines)
+        @node[:table_of_contents] = TableOfContentsParser.new.parse(@lines)
       end
 
       def parse_section
-        section = SectionParser.parse(@lines)
+        section = SectionParser.new.parse(@lines)
         tag = section[:tag]
 
         @node[:sections] ||= {}
