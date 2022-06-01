@@ -5,14 +5,10 @@ require_relative './parsers/content_parser'
 
 module VimDoc
   class Parser
-    def self.parse(path)
-      new.parse(path)
-    end
+    def parse(file_path)
+      lines = File.readlines(file_path)
 
-    def parse(path)
-      lines = File.readlines(path)
-
-      { header: Parsers::HeaderParser.parse(lines) }.merge!(Parsers::ContentParser.parse(lines))
+      { header: Parsers::HeaderParser.new.parse(lines) }.merge!(Parsers::ContentParser.new.parse(lines))
     end
   end
 end

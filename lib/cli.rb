@@ -3,36 +3,54 @@
 require 'optparse'
 
 require_relative './parser'
-require_relative './converters/json_converter'
+require_relative './converters'
 
 module VimDoc
   class CLI
-    USAGE = 'Converts vim help files to the different formats (markdown, json, ...)'
-    DEFAULT_CONVERTER = Converters::JSONConverter
+    USAGE_MESSAGE = 'Converts vim help files to the different formats (markdown, json, ...)'
 
-    def self.run(args)
-      new.run(args)
+    CONVERTERS = {
+      json: Converters::JSONConverter,
+      yaml: Converters::YAMLConverter
+    }.freeze
+    DEFAULT_CONVERTER = CONVERTERS[:json].freeze
+
+    FORMATS = {
+      json: 'json',
+      yaml: 'yaml'
+    }.freeze
+    DEFAULT_FORMAT = FORMATS[:json].freeze
+
+    def initialize(args)
+      @args = args
+      @format = DEFAULT_FORMAT
+      @output_file = nil
     end
 
-    def run(args)
+    def run
       if args.empty?
         options_parser.parse(['--help'])
         exit
       end
 
       options_parser.parse(args)
+      validate_options!
 
-      doc_file = doc_file(args)
-      content = content(doc_file)
-      @output_file ? File.write(@output_file, content) : puts(content)
+      output_file ? File.write(File.expand_path(output_file), content) : puts(content)
     end
 
     private
 
+    attr_reader :args, :format, :output_file
+
     def options_parser
-      OptionParser.new(USAGE) do |option|
-        option.on('-o', '--output PATH', 'output to a file') do |path|
-          @output_file = File.expand_path(path)
+      OptionParser.new(USAGE_MESSAGE) do |option|
+        option.on('-o', '--output PATH', 'output to a file') do |file|
+          @output_file = file
+        end
+        option.on('-f',
+          '--format FORMAT', "content format. Possible values: #{formats}, Default: #{DEFAULT_FORMAT}") do |format|
+          @format = format
         end
         option.on_tail('--help', 'display a usage message') do
           puts option
@@ -41,15 +59,25 @@ module VimDoc
       end
     end
 
-    def doc_file(args)
-      return args.first unless @output_file
-
-      args.reject { |arg| arg.start_with?('-') || arg == @output_file }.first
+    def validate_options!
+      raise "Format '#{format}' is not valid. Possible formats: #{formats}." unless FORMATS.values.include?(format)
     end
 
-    def content(doc_file)
-      tree = Parser.parse(doc_file)
-      DEFAULT_CONVERTER.convert(tree)
+    def content
+      tree = parser.parse(File.expand_path(args.first))
+      converter.convert(tree)
+    end
+
+    def parser
+      @parser ||= Parser.new
+    end
+
+    def converter
+      @converter ||= (CONVERTERS[format.to_sym] || DEFAULT_CONVERTER).new
+    end
+
+    def formats
+      @formats ||= FORMATS.values.join(', ')
     end
   end
 end
