@@ -7,7 +7,6 @@ require_relative './section_parser'
 module VimDoc
   module Parsers
     class ContentParser < BaseParser
-      SECTIONS_SEPARATOR = '='
       TABLE_OF_CONTENTS_TITLE = 'CONTENTS'
 
       def initialize
@@ -66,10 +65,6 @@ module VimDoc
 
       def table_of_contents_block?(line)
         line.start_with?(TABLE_OF_CONTENTS_TITLE)
-      end
-
-      def block_separator?(line)
-        line.start_with?(SECTIONS_SEPARATOR)
       end
     end
   end
