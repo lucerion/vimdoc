@@ -3,6 +3,7 @@
 module VimDoc
   module Parsers
     class BaseParser
+      SECTIONS_SEPARATOR = '='
       TAG_WRAPPER = '*'
 
       def parse(_lines)
@@ -12,11 +13,19 @@ module VimDoc
       protected
 
       def separate_line(line)
-        line.split(/\s/).delete_if(&method(:empty_line?))
+        squish(line).split(/[[:space:]]/)
       end
 
       def empty_line?(line)
         line.strip.empty?
+      end
+
+      def block_separator?(line)
+        line.start_with?(SECTIONS_SEPARATOR)
+      end
+
+      def squish(line)
+        line.gsub(/[[:space:]]+/, ' ').strip
       end
     end
   end
