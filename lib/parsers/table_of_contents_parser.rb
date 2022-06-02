@@ -6,11 +6,19 @@ module VimDoc
       TAG_SIGN = '|'
 
       def parse(lines)
-        lines.each_with_object({}) do |line, table_of_contents|
-          title, tag = split_line_by_whitespaces(line)
-          tag_text = delete_tag_signs(tag)
-          table_of_contents[tag_text] = title
-        end
+        title, tag = split_line_by_whitespaces(lines.first)
+
+        content =
+          lines[1..-1].map do |line|
+            content_title, content_tag = split_line_by_whitespaces(line)
+            { text: content_title, tag: delete_tag_signs(content_tag, TAG_SIGN) }
+          end
+
+        {
+          title: title,
+          tag: delete_tag_signs(tag),
+          content: content
+        }
       end
     end
   end

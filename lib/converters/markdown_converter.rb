@@ -24,17 +24,17 @@ module VimDoc
         [
           h1(header[:tag]),
           EMPTY_LINE,
-          header[:description]
+          header[:text]
         ].join(NEW_LINE)
       end
 
       def table_of_contents(table_of_contents)
-        items = table_of_contents.values.map(&method(:link))
+        items = table_of_contents[:content].map { |line| link(line[:text]) }
         list(items).join(NEW_LINE)
       end
 
       def sections(sections)
-        sections.values.map do |section|
+        sections.map do |section|
           [
             h2(section[:title]),
             EMPTY_LINE,
