@@ -7,8 +7,8 @@ module VimDoc
         header = split_line_by_whitespaces(lines.first)
 
         {}.tap do |node|
+          node[:text] = header[1..-1].join(' ')
           node[:tag] = delete_tag_signs(header.first)
-          node[:description] = header[1..-1].join(' ')
           node[:content] = lines[1..-1].map(&method(:delete_whitespaces))
         end
       end

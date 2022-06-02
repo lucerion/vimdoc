@@ -23,8 +23,8 @@ module VimDoc
         line.gsub(/[[:space:]]+/, ' ').strip
       end
 
-      def delete_tag_signs(line)
-        line.tr(self.class::TAG_SIGN, '')
+      def delete_tag_signs(line, tag_sign = TAG_SIGN)
+        line.tr(tag_sign, '')
       end
     end
   end

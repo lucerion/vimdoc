@@ -19,6 +19,8 @@ module VimDoc
       section_block = false
 
       File.readlines(file_path).each do |line|
+        next if empty_line?(line)
+
         if end_of_block?(line)
           if header_block
             @tree[:header] = VimDoc::Parsers::HeaderParser.parse(block)
@@ -31,25 +33,18 @@ module VimDoc
           end
 
           if section_block
-            section = VimDoc::Parsers::SectionParser.parse(block)
-            section_tag = section[:tag]
-
-            @tree[:sections] ||= {}
-            @tree[:sections][section_tag] = section
+            @tree[:sections] ||= []
+            @tree[:sections] << VimDoc::Parsers::SectionParser.parse(block)
           end
 
           block = []
           next # skip separator line
         end
 
-        if table_of_contents_starts?(line)
-          table_of_contents_block = true
-          next # skip table of contents header
-        end
-
+        table_of_contents_block = true if table_of_contents_starts?(line)
         section_block = !header_block && !table_of_contents_block
 
-        block << line unless empty_line?(line)
+        block << line
       end
 
       @tree
