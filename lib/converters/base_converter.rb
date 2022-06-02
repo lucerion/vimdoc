@@ -3,6 +3,10 @@
 module VimDoc
   module Converters
     class BaseConverter
+      def self.convert(convert)
+        new.convert(convert)
+      end
+
       def convert
         raise NotImplementedError
       end

@@ -73,7 +73,7 @@ module VimDoc
     end
 
     def converter
-      @converter ||= (CONVERTERS[format.to_sym] || DEFAULT_CONVERTER).new
+      @converter ||= CONVERTERS[format.to_sym] || DEFAULT_CONVERTER
     end
 
     def formats
