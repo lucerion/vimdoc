@@ -3,8 +3,11 @@
 module VimDoc
   module Parsers
     class BaseParser
-      SECTIONS_SEPARATOR = '='
-      TAG_WRAPPER = '*'
+      TAG_SIGN = '*'
+
+      def self.parse(lines)
+        new.parse(lines)
+      end
 
       def parse(_lines)
         raise NotImplementedError
@@ -12,20 +15,16 @@ module VimDoc
 
       protected
 
-      def separate_line(line)
-        squish(line).split(/[[:space:]]/)
+      def split_line_by_whitespaces(line)
+        delete_whitespaces(line).split(/[[:space:]]/)
       end
 
-      def empty_line?(line)
-        line.strip.empty?
-      end
-
-      def block_separator?(line)
-        line.start_with?(SECTIONS_SEPARATOR)
-      end
-
-      def squish(line)
+      def delete_whitespaces(line)
         line.gsub(/[[:space:]]+/, ' ').strip
+      end
+
+      def delete_tag_signs(line)
+        line.tr(self.class::TAG_SIGN, '')
       end
     end
   end

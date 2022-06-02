@@ -1,33 +1,27 @@
 # frozen_string_literal: true
 
-require_relative './base_parser'
-
 module VimDoc
   module Parsers
     class SectionParser < BaseParser
       TAG_LINE = /.*\*.*\*$/.freeze
 
       def parse(lines)
-        header = separate_line(lines.first)
+        header = split_line_by_whitespaces(lines.first)
 
         {}.tap do |node|
           node[:title] = header.first
-          node[:tag] = header.last.tr(TAG_WRAPPER, '')
-          node[:content] = content(lines)
+          node[:tag] = delete_tag_signs(header.last)
+          node[:content] = content(lines[1..-1])
         end
       end
 
       private
 
       def content(lines)
-        lines[1..-1].each_with_object([]) do |line, content_lines|
-          content_line = line.gsub(/\s+/, ' ').strip
-          content_lines << content_line unless tag_line?(content_line)
+        lines.each_with_object([]) do |line, content_lines|
+          content_line = delete_whitespaces(line)
+          content_lines << content_line unless TAG_LINE.match(line)
         end
-      end
-
-      def tag_line?(line)
-        TAG_LINE.match(line)
       end
     end
   end

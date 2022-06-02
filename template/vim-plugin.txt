@@ -6,7 +6,7 @@ Version:          0.1 (1970-01-01)
 Licence:          BSD-3-Clause (see vim-plugin-license)
 
 ===============================================================================
-CONTENTS                                                           *vim-plugin*
+CONTENTS                                                  *vim-plugin-contents*
 
 Install                                                    |vim-plugin-install|
 Commands                                                  |vim-plugin-commands|

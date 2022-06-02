@@ -10,6 +10,8 @@ Converts vim help files to the different formats (markdown, json, yaml, ...)
 
 ## Template
 
+See full example [here](template/vim-plugin.txt).
+
 ### Header
 
 ```
@@ -20,7 +22,7 @@ Converts vim help files to the different formats (markdown, json, yaml, ...)
 
 ```
 ===============================================================================
-CONTENTS                                                           *vim-plugin*
+CONTENTS                                                   *vim-plugin-content*
 
 Install                                                    |vim-plugin-install|
 Commands                                                  |vim-plugin-commands|
