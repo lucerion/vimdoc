@@ -7,15 +7,17 @@ require_relative './converters'
 
 module VimDoc
   class CLI
-    USAGE_MESSAGE = 'Converts vim help files to the different formats (markdown, json, ...)'
+    USAGE_MESSAGE = 'Converts vim help files to the different formats (markdown, json, yaml)'
 
     CONVERTERS = {
+      markdown: Converters::MarkdownConverter,
       json: Converters::JSONConverter,
       yaml: Converters::YAMLConverter
     }.freeze
     DEFAULT_CONVERTER = CONVERTERS[:json].freeze
 
     FORMATS = {
+      markdown: 'markdown',
       json: 'json',
       yaml: 'yaml'
     }.freeze
