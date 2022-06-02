@@ -5,6 +5,7 @@ module VimDoc
     class MarkdownConverter < BaseConverter
       NEW_LINE = "\n".freeze
       EMPTY_LINE = nil
+      CODE_BLOCK_SIGN = '```'.freeze
 
       def convert(tree)
         [
@@ -38,7 +39,7 @@ module VimDoc
           [
             h2(section[:title]),
             EMPTY_LINE,
-            section[:content].join(NEW_LINE),
+            section_content(section[:content]).join(NEW_LINE),
             EMPTY_LINE,
           ].join(NEW_LINE)
         end
@@ -60,8 +61,20 @@ module VimDoc
         items.map { |item| "* #{item}" }
       end
 
+      def code_block(lines)
+        [
+          CODE_BLOCK_SIGN,
+          lines.join(NEW_LINE),
+          CODE_BLOCK_SIGN
+        ].join(NEW_LINE)
+      end
+
       def convert_to_link(text)
         text.downcase.gsub(/[[:punct:]]/, '').gsub(' ', '-')
+      end
+
+      def section_content(content)
+        content.map { |line| line.is_a?(Array) ? code_block(line) : line }
       end
     end
   end
