@@ -3,9 +3,9 @@
 module VimDoc
   module Converters
     class MarkdownConverter < BaseConverter
-      NEW_LINE = "\n".freeze
+      NEW_LINE = "\n"
       EMPTY_LINE = nil
-      CODE_BLOCK_SIGN = '```'.freeze
+      CODE_BLOCK_SIGN = '```'
 
       def convert(tree)
         [
@@ -40,7 +40,7 @@ module VimDoc
             h2(section[:title]),
             EMPTY_LINE,
             section_content(section[:content]).join(NEW_LINE),
-            EMPTY_LINE,
+            EMPTY_LINE
           ].join(NEW_LINE)
         end
       end

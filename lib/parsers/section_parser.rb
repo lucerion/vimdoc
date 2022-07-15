@@ -4,8 +4,8 @@ module VimDoc
   module Parsers
     class SectionParser < BaseParser
       TAG_LINE = /.*\*.*\*$/.freeze
-      CODE_BLOCK_START = '>'.freeze
-      CODE_BLOCK_END = '<'.freeze
+      CODE_BLOCK_START = '>'
+      CODE_BLOCK_END = '<'
 
       def parse(lines)
         header = split_line_by_whitespaces(lines.first)
@@ -13,7 +13,7 @@ module VimDoc
         {}.tap do |node|
           node[:title] = header.first
           node[:tag] = delete_tag_signs(header.last)
-          node[:content] = content(lines[1..-1])
+          node[:content] = content(lines[1..])
         end
       end
 

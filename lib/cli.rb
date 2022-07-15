@@ -51,7 +51,8 @@ module VimDoc
           @output_file = file
         end
         option.on('-f',
-          '--format FORMAT', "content format. Possible values: #{formats}, Default: #{DEFAULT_FORMAT}") do |format|
+                  '--format FORMAT',
+                  "content format. Possible values: #{formats}, Default: #{DEFAULT_FORMAT}") do |format|
           @format = format
         end
         option.on_tail('--help', 'display a usage message') do
