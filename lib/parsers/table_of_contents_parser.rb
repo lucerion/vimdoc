@@ -9,7 +9,7 @@ module VimDoc
         title, tag = split_line_by_whitespaces(lines.first)
 
         content =
-          lines[1..-1].map do |line|
+          lines[1..].map do |line|
             content_title, content_tag = split_line_by_whitespaces(line)
             { text: content_title, tag: delete_tag_signs(content_tag, TAG_SIGN) }
           end
