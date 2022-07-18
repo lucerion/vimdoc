@@ -1,12 +1,18 @@
-# vimdoc
+# VimDoc
 
 Converts vim help files to the different formats (markdown, json, yaml).
 
 
 ## Usage
 
-    ./bin/vimdoc path/to/help/file path/to/another/help/file
+```
+./bin/vimdoc [OPTIONS] FILE
 
+    -f, --format FORMAT  content format.
+                         Possible values: markdown, json, yaml.
+                         Default: json
+        --help           display a usage message
+```
 
 ## Template
 

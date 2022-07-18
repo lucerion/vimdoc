@@ -7,50 +7,59 @@ module VimDoc
     SECTIONS_SEPARATOR = '='
     TABLE_OF_CONTENTS_TITLE = 'CONTENTS'
 
+    attr_reader :tree
+
     def initialize
       @tree = {}
+      @block = []
+      @header_block = true
+      @table_of_contents_block = false
+      @section_block = false
     end
 
     def parse(file_path)
-      block = []
-
-      header_block = true
-      table_of_contents_block = false
-      section_block = false
-
       File.readlines(file_path).each do |line|
         next if empty_line?(line)
 
         if end_of_block?(line)
-          if header_block
-            @tree[:header] = VimDoc::Parsers::HeaderParser.parse(block)
-            header_block = false
-          end
-
-          if table_of_contents_block
-            @tree[:table_of_contents] = VimDoc::Parsers::TableOfContentsParser.parse(block)
-            table_of_contents_block = false
-          end
-
-          if section_block
-            @tree[:sections] ||= []
-            @tree[:sections] << VimDoc::Parsers::SectionParser.parse(block)
-          end
-
-          block = []
+          parse_block
+          @block = []
           next # skip separator line
         end
 
-        table_of_contents_block = true if table_of_contents_starts?(line)
-        section_block = !header_block && !table_of_contents_block
+        detect_block(line)
 
-        block << line
+        @block << line
       end
-
-      @tree
     end
 
     private
+
+    def parse_block
+      parse_header_block if @header_block
+      parse_table_of_contents_block if @table_of_contents_block
+      parse_section_block if @section_block
+    end
+
+    def detect_block(line)
+      @table_of_contents_block = true if table_of_contents_starts?(line)
+      @section_block = !@header_block && !@table_of_contents_block
+    end
+
+    def parse_header_block
+      @tree[:header] = VimDoc::Parsers::HeaderParser.parse(@block)
+      @header_block = false
+    end
+
+    def parse_table_of_contents_block
+      @tree[:table_of_contents] = VimDoc::Parsers::TableOfContentsParser.parse(@block)
+      @table_of_contents_block = false
+    end
+
+    def parse_section_block
+      @tree[:sections] ||= []
+      @tree[:sections] << VimDoc::Parsers::SectionParser.parse(@block)
+    end
 
     def table_of_contents_starts?(line)
       line.start_with?(TABLE_OF_CONTENTS_TITLE)
