@@ -5,43 +5,87 @@ module VimDoc
     class MarkdownConverter < BaseConverter
       NEW_LINE = "\n"
       EMPTY_LINE = nil
-      CODE_BLOCK_SIGN = '```'
+      CODE_BLOCK = '```'
+
+      LINE_TYPES = %i[
+        empty_line
+        separator
+        header
+        anchor
+        link
+        code_start
+        code_end
+        text
+      ].freeze
 
       def convert(tree)
-        [
-          header(tree[:header]),
-          EMPTY_LINE,
-          table_of_contents(tree[:table_of_contents]),
-          EMPTY_LINE,
-          sections(tree[:sections])
-        ].join(NEW_LINE)
+        content = []
+
+        tree.each do |block|
+          block.each do |line|
+            parsed_line = line[:parsed]
+
+            next if empty_line?(parsed_line.first)
+            next if separator?(parsed_line.first)
+            next if anchor_line?(parsed_line)
+
+            if doc_header?(tree, line)
+              content << h1(parsed_line.first[:text].gsub('*', '').gsub('.txt', ''))
+              content << EMPTY_LINE
+              content << parsed_line.last[:text]
+              content << EMPTY_LINE
+              next
+            end
+
+            if header?(parsed_line.first)
+              content << h2(parsed_line.first[:text])
+              content << EMPTY_LINE
+              next
+            end
+
+            if link?(parsed_line.last)
+              content << list_item(link(parsed_line))
+              next
+            end
+
+            if code_start?(parsed_line.first) || code_end?(parsed_line.first)
+              content << CODE_BLOCK
+              content << EMPTY_LINE
+              next
+            end
+
+            if text_line?(parsed_line)
+              content << text_line(parsed_line)
+              content << EMPTY_LINE
+            end
+          end
+        end
+
+        content.join(NEW_LINE)
       end
 
       private
 
-      attr_accessor :content
-
-      def header(header)
-        [
-          h1(header[:tag]),
-          EMPTY_LINE,
-          header[:text]
-        ].join(NEW_LINE)
+      def anchor_line?(parsed_line)
+        parsed_line.one? && anchor?(parsed_line.last)
       end
 
-      def table_of_contents(table_of_contents)
-        items = table_of_contents[:content].map { |line| link(line[:text]) }
-        list(items).join(NEW_LINE)
+      def doc_header?(tree, line)
+        first_file_line = tree.first.first[:origin] == line[:origin]
+        first_file_line && anchor?(line[:parsed].first)
       end
 
-      def sections(sections)
-        sections.map do |section|
-          [
-            h2(section[:title]),
-            EMPTY_LINE,
-            section_content(section[:content]).join(NEW_LINE),
-            EMPTY_LINE
-          ].join(NEW_LINE)
+      def text_line?(parsed_line)
+        parsed_line.all? { |subline| text?(subline) }
+      end
+
+      def text_line(parsed_line)
+        parsed_line.map { |subline| subline[:text] }.join(' ')
+      end
+
+      LINE_TYPES.each do |line_type|
+        define_method("#{line_type}?") do |line|
+          line[:type] == line_type
         end
       end
 
@@ -53,28 +97,15 @@ module VimDoc
         "## #{text}"
       end
 
-      def link(text, link = nil)
-        "[#{text}](##{link || convert_to_link(text)})"
+      def link(line)
+        text = line.first[:text]
+        link = text.downcase.gsub(' ', '-')
+
+        "[#{text}](#{link})"
       end
 
-      def list(items)
-        items.map { |item| "* #{item}" }
-      end
-
-      def code_block(lines)
-        [
-          CODE_BLOCK_SIGN,
-          lines.join(NEW_LINE),
-          CODE_BLOCK_SIGN
-        ].join(NEW_LINE)
-      end
-
-      def convert_to_link(text)
-        text.downcase.gsub(/[[:punct:]]/, '').gsub(' ', '-')
-      end
-
-      def section_content(content)
-        content.map { |line| line.is_a?(Array) ? code_block(line) : line }
+      def list_item(text)
+        "* #{text}"
       end
     end
   end
