@@ -16,30 +16,11 @@ License                                                    |vim-plugin-license|
 
 ===============================================================================
 INSTALL                                                    *vim-plugin-install*
-
-Vundle                                https://github.com/VundleVim/Vundle.vim
 >
-    Plugin 'username/vim-plugin'
+    mkdir -p ~/.vim/pack/lucerion/start
+    cd ~/.vim/pack/lucerion/start
+    git clone https://github.com/lucerion/vim-i18n-rails
 <
-Pathogen                                https://github.com/tpope/vim-pathogen
->
-    cd ~/.vim/bundle
-    git clone https://github.com/username/vim-plugin
-<
-NeoBundle                             https://github.com/Shougo/neobundle.vim
->
-    NeoBundle 'username/vim-plugin'
-<
-vim-plug                                 https://github.com/junegunn/vim-plug
->
-    Plug 'username/vim-plugin'
-<
-Manual
->
-    git clone https://github.com/username/vim-plugin
-<
-    copy all of the files into your ~/.vim directory
-
 ===============================================================================
 COMMANDS                                                  *vim-plugin-commands*
 
